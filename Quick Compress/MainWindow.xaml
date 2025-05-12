@@ -5,16 +5,47 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Quick_Compress"
         mc:Ignorable="d"
-        Title="SKI's QuickCompress" Height="588" Width="430"
+        Title="SKI's QuickCompress" Height="573" Width="365"
         WindowStartupLocation="CenterScreen">
-        
-    <StackPanel Orientation="Vertical" Margin="12">
-        <Label Name="Video_Name" Content="Vídeo: "></Label>
 
-        <StackPanel Orientation="Horizontal" Background="#FFEAEAEA">
-            <Label FontSize="20" Content="Taxa de Bits: " VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <Label Name="Bit_Rate_Text" Content="0 kbps" HorizontalContentAlignment="Right" VerticalContentAlignment="Stretch" FontSize="18" VerticalAlignment="Center"/> <!-- Updated when any setting is changed. -->
-            <Label Name="Bit_Rate_Description_Text" Content="(Bom)" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" VerticalContentAlignment="Stretch" HorizontalAlignment="Left" VerticalAlignment="Center"/> <!-- Show the bit rate condition. -->
+
+    <DockPanel>
+        <StackPanel Margin="12,0,12,0" DockPanel.Dock="Top" VerticalAlignment="Center">
+            <Label x:Name="txtVideo_Name" Content="Vídeo: " ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" Height="46"/>
+            <Label x:Name="txtVideo_Title" Height="34" FontFamily="Bahnschrift SemiBold" HorizontalAlignment="Left" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontSize="24"></Label>
+            <StackPanel Orientation="Horizontal" Background="#FFEAEAEA" Margin="0,0,0,20">
+                <Label FontSize="20" Content="Taxa de Bits: " VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Label x:Name="txtBit_Rate_Text" Content="0 kbps" HorizontalContentAlignment="Right" VerticalContentAlignment="Stretch" FontSize="18" VerticalAlignment="Center"/>
+                <!-- Updated when any setting is changed. -->
+                <Label x:Name="txtBit_Rate_Description_Text" Content="(Bom)" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" VerticalContentAlignment="Stretch" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <!-- Show the bit rate condition. -->
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <ComboBox x:Name="txtRelolution_Selector" Width="94" Height="30" HorizontalAlignment="Left" VerticalContentAlignment="Bottom" Margin="0,0,50,0">
+                    <ComboBoxItem>8K</ComboBoxItem>
+                    <ComboBoxItem>4K</ComboBoxItem>
+                    <ComboBoxItem>2K (QHD)</ComboBoxItem>
+                    <ComboBoxItem>1080p</ComboBoxItem>
+                    <ComboBoxItem>900p</ComboBoxItem>
+                    <ComboBoxItem>720p</ComboBoxItem>
+                    <ComboBoxItem>480p</ComboBoxItem>
+                    <ComboBoxItem>360p</ComboBoxItem>
+                    <ComboBoxItem>240p</ComboBoxItem>
+                    <ComboBoxItem>144p</ComboBoxItem>
+                </ComboBox>
+                <TextBox x:Name="txtFramerate_Selector" PreviewTextInput="IntOnly" Width="94" Height="30" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MaxLines="1"/>
+                <Label Content="FPS"/>
+            </StackPanel>
+            <Label x:Name="txtCodecLabel" Height="34" FontSize="16">Codec: </Label>
         </StackPanel>
-    </StackPanel>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Height="44" Margin="12,300,12,0">
+            <TextBox x:Name="FileSizeSelector" TextWrapping="Wrap" Text="" Width="107" Height="26"/>
+            <ComboBox x:Name="MeasureSizeSelector" Width="62" Height="24">
+                <ComboBoxItem>GB</ComboBoxItem>
+                <ComboBoxItem>MB</ComboBoxItem>
+                <ComboBoxItem>KB</ComboBoxItem>
+            </ComboBox>
+            <Button x:Name="btnCompress" Content="Comprimir" Margin="30,0,30,0" Width="118" FontSize="18"/>
+        </StackPanel>
+    </DockPanel>
 </Window>

@@ -39,27 +39,27 @@ namespace Quick_Compress
             MessageBox.Show("slk");
         }
 
-        public void SetVideo(string videoDirectory)
+        public void SetVideo(VideoInfo videoInfo)
         {
-            long bitRateInKiloBytes = CurrentApplication.VideoFile.VideoBitRate / 1000;
+            uint bitRateInKiloBytes = (uint) (CurrentApplication.VideoFile.Bitrate / 1000);
 
-            Video_Name.Content = $"Video: {videoDirectory}";
-            Bit_Rate_Text.Content = $"{bitRateInKiloBytes.ToString("N0")} kbps";
+            if (videoInfo.Title != null)
+                txtVideo_Title.Content = videoInfo.Title;
+            else
+                txtVideo_Title.Visibility = Visibility.Collapsed;
+            
+            txtVideo_Name.Content = $"Video: {videoInfo.VideoPath}";
+            
+            txtBit_Rate_Text.Content = $"{bitRateInKiloBytes.ToString("N0")} kbps";
+            txtBit_Rate_Text.ToolTip = $"Default: {bitRateInKiloBytes.ToString("N0")} kbps";
+
+            txtCodecLabel.Content = $"Codec: {videoInfo.CodecName}";
+            txtCodecLabel.ToolTip = $"Default: {videoInfo.CodecName}";
 
         }
-
-        public ProcessStartInfo GetVideoData(string videoDirectory)
+        public void IntOnly(object sender, TextCompositionEventArgs e)
         {
-            if (!File.Exists(videoDirectory))
-            {
-                ;
-            }
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-
-            };
-
-            return startInfo;
+            e.Handled = !int.TryParse(e.Text, out _);
         }
     }
 }

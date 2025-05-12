@@ -4,6 +4,8 @@ using System.Data;
 using System.Windows;
 using Microsoft.Win32;
 using System.IO;
+using System.Windows.Input;
+using System.Windows.Controls;
 
 
 
@@ -34,13 +36,13 @@ namespace Quick_Compress
                 ValidateFilePath(VideoPath); // Close if the user cancel the search
             }
 
-            CheckAndPromptkTool();
+            CheckAndPromptTool();
 
             VideoFile = new VideoInfo(VideoPath);
 
             MainWindow main_window = new MainWindow();
 
-            main_window.SetVideo(VideoPath);
+            main_window.SetVideo(VideoFile);
             main_window.Show();
         }
 
@@ -58,8 +60,6 @@ namespace Quick_Compress
                 return e.Args[0];
             }
         }
-
-
     }
 
 }

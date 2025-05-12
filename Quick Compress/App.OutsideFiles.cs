@@ -37,7 +37,7 @@ namespace Quick_Compress
                 return string.Empty;
             }
         }
-        private bool CheckAndPromptkTool()
+        private bool CheckAndPromptTool()
         {
             if (File.Exists(ReadonlyToolPath))
             {
