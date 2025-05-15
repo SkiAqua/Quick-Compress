@@ -36,11 +36,12 @@ namespace Quick_Compress
                 ValidateFilePath(VideoPath); // Close if the user cancel the search
             }
 
-            CheckAndPromptTool();
+            if (!CheckAndPromptTool())
+                Environment.Exit(0);
 
             VideoFile = new VideoInfo(VideoPath);
 
-            MainWindow main_window = new MainWindow();
+            MainWindow main_window = new MainWindow(VideoFile);
 
             main_window.SetVideo(VideoFile);
             main_window.Show();

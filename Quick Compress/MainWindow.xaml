@@ -21,31 +21,27 @@
                 <!-- Show the bit rate condition. -->
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <ComboBox x:Name="txtRelolution_Selector" Width="94" Height="30" HorizontalAlignment="Left" VerticalContentAlignment="Bottom" Margin="0,0,50,0">
-                    <ComboBoxItem>8K</ComboBoxItem>
-                    <ComboBoxItem>4K</ComboBoxItem>
-                    <ComboBoxItem>2K (QHD)</ComboBoxItem>
-                    <ComboBoxItem>1080p</ComboBoxItem>
-                    <ComboBoxItem>900p</ComboBoxItem>
-                    <ComboBoxItem>720p</ComboBoxItem>
-                    <ComboBoxItem>480p</ComboBoxItem>
-                    <ComboBoxItem>360p</ComboBoxItem>
-                    <ComboBoxItem>240p</ComboBoxItem>
-                    <ComboBoxItem>144p</ComboBoxItem>
-                </ComboBox>
+                <ComboBox x:Name="txtRelolution_Selector" Width="94" Height="30" HorizontalAlignment="Left" VerticalContentAlignment="Bottom" Margin="0,0,50,0"/>
                 <TextBox x:Name="txtFramerate_Selector" PreviewTextInput="IntOnly" Width="94" Height="30" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MaxLines="1"/>
                 <Label Content="FPS"/>
             </StackPanel>
-            <Label x:Name="txtCodecLabel" Height="34" FontSize="16">Codec: </Label>
+            <Label x:Name="txtCodecLabel" Height="34" FontSize="16">Codec:</Label>
         </StackPanel>
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Height="44" Margin="12,300,12,0">
-            <TextBox x:Name="FileSizeSelector" TextWrapping="Wrap" Text="" Width="107" Height="26"/>
-            <ComboBox x:Name="MeasureSizeSelector" Width="62" Height="24">
-                <ComboBoxItem>GB</ComboBoxItem>
-                <ComboBoxItem>MB</ComboBoxItem>
-                <ComboBoxItem>KB</ComboBoxItem>
-            </ComboBox>
-            <Button x:Name="btnCompress" Content="Comprimir" Margin="30,0,30,0" Width="118" FontSize="18"/>
+
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Bottom" Height="70" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Bottom">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="332">
+                <TextBox x:Name="FileSizeSelector" TextWrapping="Wrap" Text="oloko" Width="107" VerticalAlignment="Center" VerticalContentAlignment="Center" Height="24"/>
+                <ComboBox x:Name="MeasureSizeSelector" SelectedIndex="1" Width="62" Height="24">
+                    <ComboBoxItem>GB</ComboBoxItem>
+                    <ComboBoxItem>MB</ComboBoxItem>
+                    <ComboBoxItem>KB</ComboBoxItem>
+                </ComboBox>
+                <Rectangle Width="61"></Rectangle>
+                <Button x:Name="btnCompress" Click="Compress" Content="Comprimir" FontSize="18" HorizontalContentAlignment="Center" Width="102" Height="36"/>
+            </StackPanel>
+            <Canvas x:Name="CompressBar_Canvas" Background="#FF50FF50" Height="20" Width="332" Margin="0,6,0,0" Visibility="Hidden">
+                <Label HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Top" Width="332" Height="31" Canvas.Top="-4">Comprimindo...</Label>
+            </Canvas>
         </StackPanel>
     </DockPanel>
 </Window>

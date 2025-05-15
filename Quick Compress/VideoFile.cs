@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO.Packaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +8,8 @@ using System.Diagnostics;
 using System.Windows.Controls;
 using System.Text.Json;
 using System.Windows;
+using System.Security.Cryptography;
+using System.Security.Policy;
 
 // size
 // duration
@@ -18,20 +20,29 @@ namespace Quick_Compress
 {
     public class VideoInfo
     {
+        private byte[] Signature;
+
         public bool IsInitiated = false;
 
         public string VideoPath;
 
         public ulong Bitrate;
+
+        public double FrameRate;
+        public string? RawFrameRate;
+
         public uint Width;
         public uint Height;
         public string? ResolutionName;
+
         public ulong Size;
         public double Duration;
 
         public string? CodecName;
         public string? FormatName;
+
         public int ProbeScore;
+
         public string? Title;
 
         public VideoInfo(string videoPath)
@@ -46,7 +57,12 @@ namespace Quick_Compress
             // A VideoInfo can't initialize twice.
             if (IsInitiated)
                 throw new Exception("Already initiated!");
-
+            else if (!File.Exists(VideoPath))
+            {
+                MessageBox.Show("O vídeo já não existe.");
+            }
+            // Gather Hash
+            Signature = GetHashFrom(videoPath);
             // Gather information from CMD
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
@@ -135,10 +151,85 @@ namespace Quick_Compress
                     Height = heightElement.GetUInt32();
                     ResolutionName = GetResolutionName(Width, Height);
                 }
+                // FrameRate
+                if (videoStream.TryGetProperty("avg_frame_rate", out JsonElement avgFrameRateElement) && !String.IsNullOrEmpty(avgFrameRateElement.GetString()))
+                    RawFrameRate = avgFrameRateElement.GetString();
+
+                if (Double.TryParse(RawFrameRate, out double newFrameRate))
+                    FrameRate = newFrameRate;
+                else
+                {
+                    string[] frParts = RawFrameRate.Split('/');
+
+                    if (frParts.Length != 2)
+                    {
+                        MessageBox.Show("Não foi possível entender a frame rate.");
+                        Environment.Exit(0);
+                    }
+
+                    FrameRate = Double.Parse(frParts[0]) / Double.Parse(frParts[1]);
+                }
+                FrameRate = Math.Round(FrameRate, 4);
             }
 
         }
+        public static string GetBitRateQuality(VideoInfo vi, string codec)
+        {
+            MessageBox.Show("A função GetBitRateQuality ainda não está funcionando");
+            /*
+            if (String.IsNullOrEmpty(vi.CodecName))
+            {
+                MessageBox.Show("Não foi possível estimar a qualidade.");
+                Environment.Exit(0);
+            }
+            double pixelPerSecond = vi.Width * vi.Height * vi.FrameRate;
 
+            double qualityPoints = vi.Bitrate / pixelPerSecond;
+
+            switch (codec)
+            {
+                case "foda":
+                    break;
+            }
+            */
+            return "";
+        }
+        public void Compress(string newPath, string newCodec, double newFrameRate, ulong newFileSize, string newResolutionName)
+        {
+            // Check path existence
+            if (!File.Exists(VideoPath))
+            {
+                MessageBox.Show("O arquivo não foi encontrado.");
+                Environment.Exit(0);
+            }
+            // Check file consistency
+            if (!Signature.SequenceEqual(GetHashFrom(VideoPath)))
+            {
+                MessageBox.Show("O arquivo não é o mesmo!");
+                Environment.Exit(0);
+            }
+            // Scale Manage
+            uint[] newSize = GetScaledResolution(Width, Height, newResolutionName);
+
+            // Calculate the bit rate
+            ulong convertedBitRate = Bitrate * newFileSize / Size;
+            // Start Process
+            ProcessStartInfo processStartInfo = new ProcessStartInfo
+            {
+                FileName = App.ConversionToolPath,
+                Arguments = $"-i \"{VideoPath}\" -c:v {newCodec} -r {newFrameRate} -b:v {convertedBitRate} -vf scale={newSize[0]}:{newSize[1]} -y \"{newPath}\"",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using Process process = Process.Start(processStartInfo);
+            string output = process.StandardError.ReadToEnd();
+            process.WaitForExit();
+
+            MessageBox.Show("Sucesso");
+        }
         public string GetResolutionName(uint width, uint height)
         {
             uint minr = Math.Min(width, height);
@@ -164,5 +255,39 @@ namespace Quick_Compress
             else
                 return "8K";
         }
+        public uint[] GetScaledResolution(uint inputWidth, uint inputHeight, string resolutionName) // returns {Width, Height}
+        {
+            bool landscape = inputWidth > inputHeight;
+
+            uint outMin = GetResolutionByResolutionName(resolutionName);
+            uint outMax = Math.Max(inputWidth, inputHeight) * outMin / Math.Min(inputWidth, inputHeight);
+
+            return landscape ? new uint[] { outMax, outMin } : new uint[] { outMin, outMax };
+        }
+        private byte[] GetHashFrom(string videoPath)
+        {
+            using var sha = SHA256.Create();
+            using var fileStream = File.OpenRead(videoPath);
+            return sha.ComputeHash(fileStream);
+        }
+        private uint GetResolutionByResolutionName(string resolutionName)
+        {
+            uint result = resolutionName switch
+            {
+                "144p" => 144,
+                "240p" => 240,
+                "360p" => 360,
+                "480p" => 480,
+                "720p" => 720,
+                "900p" => 900,
+                "1080p" => 1080,
+                "2K (QHD)" => 1440,
+                "4K" => 2160,
+                _ => 4320
+            };
+
+            return result;
+        }
+
     }
 }

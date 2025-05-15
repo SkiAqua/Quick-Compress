@@ -50,7 +50,7 @@ namespace Quick_Compress
                 if (result == MessageBoxResult.Yes)
                 {
                     OpenFileDialog dialog = new OpenFileDialog();
-
+                    return true;
                 }
 
                 return false;
